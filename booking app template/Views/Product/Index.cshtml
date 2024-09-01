@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "List of Products";
+}
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3 col-xs-10 border-primary mb-3" >
+            <div class="card mb-5" style="max-width:340px;min-height:550px; border-color:purple;background-color:#C8A2C8;border-width: 3px; border-radius:8px">
+                <div class="row g-0">
+                    <div class="col-md-12" >
+                        <div class="card-header text-light" style="background-color:purple">
+                            <p class="card-text text-light">
+                                <h5 class="card-title" >
+                                    @item.Name
+                                    <p>£@item.Price  Per Day</p>                                    
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <a class="text-white float-right" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                                    }                                                                        
+                                </h5>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6" >
+                        <img src="@item.ImageURL" style="max-height:200px; max-width:300px" alt="@item.Name">
+                    </div>                    
+                        <div class="card-body">
+                            <p class="card-text text-light">@item.Description</p>
+                        </div>                    
+                    <div class="col-md-12" style="position:absolute; bottom:0;">
+                        <div class="card-footer" >
+                            <p class="card-text" >
+                                <a class="btn btn-outline-primary float-right" asp-action="Details" asp-route-id="@item.Id">
+                                    <i class="bi bi-eye-fill"></i> Check Availability and Details</a>                                
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@await Html.PartialAsync("_CreateItem", "Product")

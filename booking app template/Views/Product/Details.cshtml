@@ -1,0 +1,93 @@
+﻿@using booking_app_template.Data.ViewModels;
+@model ProductOrderVM
+
+
+@{
+    ViewData["Title"] = "Product details";
+}
+
+
+<div style="max-width:440px;min-height:500px; border-color:purple;background-color:#C8A2C8;border-width: 3px; border-radius:8px; margin: auto; width:90%;">
+    <div class="row g-0" >
+        <div class="col-md-12" >
+            <div class="card-header text-white " style="background-color:purple">
+                <p class="card-text">
+                    <h5 class="card-title">
+                        @Model.Product.Name
+                    </h5>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <img src="@Model.Product.ImageURL" width="100%" alt="@Model.Product.Name">
+        </div>
+
+        <form method="post">
+        <div class="col-md-8">
+            <div class="card-body">
+                    <p class="card-text">@Model.Product.Description</p>
+                <p class="card-text">
+                             
+                </p>
+                <p class="card-text">
+                            
+                </p>
+                                                             
+                <b>Check Date availability.</b>
+                <div class="form-group" style="max-width:200px;" >
+                        <input id="datepicker" type="text" name="datepicker" class="form-control" placeholder="Click here to check dates!" style="background-color:lightseagreen" readonly />
+                </div>                     
+            </div> 
+            
+        </div>
+        <div class="col-md-12">
+            <div class="card-footer">
+                <input type="submit" class="btn btn-success text-white" id="submitButton" name="submitButton"
+                asp-controller="Orders" asp-action="AddItemToShoppingCart"
+                           asp-route-id="@Model.Product.Id" value="Add to Cart (Price @Model.Product.Price.ToString("c"))" disabled="disabled" />
+            </div>
+        </div>
+        </form>
+    </div
+</div>
+
+@section Scripts
+{
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>  
+        $(function() {
+            var unavailableDates = @Html.Raw(Json.Serialize(Model.DateList.Select(d => d.ToString("yyyy-MM-dd"))));
+
+            function disableDates(date) {
+                var string = $.datepicker.formatDate('yy-mm-dd', date);
+                if (unavailableDates.indexOf(string) == -1) {
+                    return [true, 'nothighlight', 'date Available.'];
+                }
+                return [false, 'highlight', 'This date is already booked.'];               
+            }
+
+            function enableDisableSubmitBtn() {
+                var startVal = $('#datepicker').val().trim();                
+                var disableBtn = startVal.length == 0;
+                $('#submitButton').attr('disabled', disableBtn);
+            }
+
+            $('#datepicker').datepicker({
+                dateFormat: 'dd-mm-yy',
+                beforeShowDay: disableDates,
+                onSelect: function() {
+                    enableDisableSubmitBtn();
+                }
+            });            
+        });
+
+        
+        
+        
+    </script>
+
+    
+}
